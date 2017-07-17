@@ -1,0 +1,131 @@
+<td-layout-nav> 
+    <td-layout-card-over cardTitle="Equipamento"  cardWidth="75"  >
+        <md-card>      
+            <form #myform="ngForm" class="example-form">
+                <md-input-container  *ngIf="equipment.id" class="example-full-width">
+                    <input mdInput placeholder="ID" disabled [value]="equipment?.id">
+                </md-input-container>
+
+                <table class="example-full-width" cellspacing="0">
+                    <tr>
+                        <td> 
+                            <md-input-container class="example-full-width">
+                                <input required #equipmentName maxlength="50" name ="name" [(ngModel)]="equipment.name" mdInput placeholder="Nome do equipamento">
+                                <md-hint align="end">{{equipmentName.value.length}} / 50</md-hint>
+                                <md-error>Este campo é obrigatório</md-error>
+                            </md-input-container>
+                        </td>
+                    </tr>
+                </table>
+                <table class="example-full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <md-input-container class="example-full-width">
+                                <textarea  required #equipmentDescription maxlength="144" name ="description" [(ngModel)]="equipment.description" mdInput placeholder="Descrição"></textarea>
+                                <md-hint align="end">{{equipmentDescription.value.length}} / 144</md-hint>
+                                <md-error>Este campo é obrigatório</md-error>
+                            </md-input-container>
+                        </td>
+                    </tr>
+                </table>   
+                <br>
+                <table class="select">
+                    <tr layout="row">
+                        <md-input-container class="select" required (click)="dialogSelectLocation()">                                
+                            <input required mdInput readonly name="location" [(ngModel)]="fullCodLocation" placeholder="Selecionar localização">                                                                                                                                                                                                         
+                            <md-error>Este campo é obrigatório</md-error>
+                        </md-input-container>
+                        <button md-icon-button *ngIf="equipment.location" (click)="clearLocation()" >
+                            <md-icon>cancel</md-icon>
+                        </button>                                
+                        <div>
+                            <button md-raised-button color="accent" (click)="dialogSelectLocation()">Selecionar</button>
+                        </div>
+                    </tr>
+                </table>
+                <br> 
+                 <table class="selectFile" *ngIf="equipment.id">
+                    <tr layout="row">
+                        <md-input-container tdFileDrop
+                                            (fileDrop)="file = $event"
+                                            (click)="fileInput.inputElement.click()"
+                                            (keyup.enter)="fileInput.inputElement.click()"
+                                            class="select"
+                                            flex>
+                            <input mdInput
+                                placeholder="Selecione ou araste o arquivo"
+                                [value]="file ? file?.name : equipment?.filePath "
+                                [disabled]="disabled"
+                                readonly/>
+                        </md-input-container>
+                        <button md-icon-button *ngIf="file || equipment.filePath" (click)="clearFile()" (keyup.enter)="clearFile()">
+                            <md-icon>cancel</md-icon>
+                        </button>
+                        <div>
+                            <td-file-input color="accent"  accept=".pdf" #fileInput name="file" [(ngModel)]="file"  [multiple]="false" [disabled]="disabled">
+                                <md-icon>attach_file</md-icon>
+                                <span >Selecionar...</span>
+                            </td-file-input>
+                        </div>
+                    </tr>
+                </table>
+                <br>
+                <table class="selectMain">
+                    <tr>
+                        <md-checkbox class="example-margin" [checked]="equipment.equipment != null" #checkBox >Associar equipamento principal</md-checkbox>
+                        <br><br><br>
+                        <div layout="row" *ngIf="checkBox.checked" class="comboBox">
+                            <md-input-container class="selectMain" required (click)="dialogSelectMainEquipment()">                                
+                                <input required mdInput readonly name="mainEquipment" [(ngModel)]="fullNameMainEquipment" placeholder="Selecionar equipamento principal">                                                                                                                                                                                                                                                                                                          
+                                <md-error>Este campo é obrigatório</md-error>
+                            </md-input-container>
+                            <button md-icon-button *ngIf="equipment.equipment" (click)="clearMainEquipment()" >
+                                <md-icon>cancel</md-icon>
+                            </button>                                
+                            <div>
+                                <button md-raised-button color="accent" (click)="dialogSelectMainEquipment()">Selecionar</button>
+                            </div>
+                        </div>
+                    </tr>
+                </table>
+                <br>
+                <md-tab-group *ngIf="equipment.id">
+                    <md-tab label="Sub equipamentos">
+                        <md-list>
+                            <div layout="row" layout-align="start center" class="pad-left-sm pad-right-sm">
+                                <td-search-box [alwaysVisible]="true" #textSearch backIcon="arrow_back" class="push-right-sm" placeholder="Procurar sub equipamento por nome ou descrição do equipamento" (searchDebounce)="search(textSearch.value)" flex>
+                                </td-search-box>
+                            </div>
+                            <md-list-item *ngIf="total == 0">
+                                <md-icon md-list-icon>hourglass_empty</md-icon>
+                                <h4 md-line>Sem resultados</h4>
+                            </md-list-item> 
+                            <md-list-item *ngFor="let subEquipment of subEquipments.content">
+                                <md-icon mdTooltip="Sub Equipamento" md-list-icon>android</md-icon> 
+                                <h4 md-line>Sub Equipamento: {{subEquipment?.name}}</h4>
+                                <p md-line> Descrição: {{subEquipment?.description }} </p>                                
+                                <button *ngIf="userCurrent?.permission == 'ROLE_ADMIN'" md-icon-button mdTooltip="Excluir" class="button" (click)="openConfirmDelete(subEquipment)" class="text-upper"><md-icon md-list-avatar>delete</md-icon></button> 
+                                 <a md-icon-button mdTooltip="Editar" class="button" [routerLink]="['/equipment-edit', subEquipment.id]"class="text-upper"><md-icon md-list-avatar>edit</md-icon></a>
+                                <button md-icon-button mdTooltip="Detalhar" class="button" [routerLink]="['/equipment-detail', subEquipment.id]" class="text-upper"><md-icon md-list-avatar>details</md-icon></button>  
+                            </md-list-item>
+                         </md-list>
+                         <td-paging-bar #pagingBar [firstLast]="true" 
+                                    [pageSizeAll]="false" [pageSizes]="[5,10,20]"
+                            pageLinkCount="5" [initialPage]="1" [pageSize]="5" [total]="total" (change)="change($event)">
+                                {{pagingBar.range}} 
+                            <span hide-xs>
+                                of {{pagingBar.total}}
+                            </span>
+                        </td-paging-bar>
+                    </md-tab>
+                </md-tab-group>
+                <br><br>
+                <div class="inset">
+                    <button md-raised-button  color="accent" type="submit"class="button" [disabled]="myform.form.invalid" (click)="saveEquipment(equipment)" >Salvar</button>
+                    <button md-raised-button  color="accent" routerLink="/equipment" [queryParams]="{page:1}" class="button">Cancelar</button>
+                </div>
+            </form>
+            
+     </md-card> 
+  </td-layout-card-over>
+</td-layout-nav>

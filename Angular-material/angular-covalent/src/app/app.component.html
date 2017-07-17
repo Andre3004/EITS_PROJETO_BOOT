@@ -1,0 +1,29 @@
+<body>
+<md-toolbar class="toolbar">
+<button md-button (click)="sidenav.open()" layout-align="center center" class="button"><md-icon>menu</md-icon></button>
+<button md-button md-button routerLink="" (click)="sidenav.close()" class="button"><md-icon >home</md-icon></button>
+<a md-button class="botao" href="/projeto/logout"><md-icon >exit_to_app</md-icon></a>
+</md-toolbar>
+<md-sidenav-container >
+
+        <router-outlet></router-outlet>
+        <md-sidenav #sidenav class="example-sidenav">
+            <li routerLinkActive="active">
+                <button class="botao-lateral" (click)="sidenav.close()" routerLink="/user" [queryParams]="{page:1}">Usuários</button>
+            </li>
+            <li routerLinkActive="active">
+                <button class="botao-lateral" (click)="sidenav.close()" routerLink="/location" [queryParams]="{page:1}">Localização</button>
+            </li>
+            <li routerLinkActive="active">
+                <button class="botao-lateral" (click)="sidenav.close()" routerLink="/equipment" [queryParams]="{page:1}">Equipamentos</button>
+            </li>
+        </md-sidenav>
+
+        
+</md-sidenav-container>
+<div flex layout="column" flex-gt-xs="30" layout-align="right right">
+          <p class="text-sm">&copy; Projeto Desafio 2017 Eits, Inc. All rights reserved.</p>
+        </div>
+</body>
+
+

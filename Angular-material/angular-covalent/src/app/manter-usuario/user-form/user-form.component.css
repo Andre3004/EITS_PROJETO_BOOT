@@ -1,0 +1,25 @@
+.example-form 
+{
+  height: 100%;
+  width: 100%;
+}
+
+.example-full-width 
+{
+  width: 100%;
+}
+.button
+{
+    position:relative;
+    left: 80%;
+}
+.deactivate
+{
+  color: white;
+  background-color: red;
+}
+.active
+{
+  color: white;
+  background-color: green;
+}

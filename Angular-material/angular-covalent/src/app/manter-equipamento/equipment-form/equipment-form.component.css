@@ -1,0 +1,26 @@
+.example-form 
+{
+  width: 100%;
+}
+
+.example-full-width 
+{
+  width: 100%;
+}
+.button
+{
+    position:relative;
+    left: 80%;
+}
+.select
+{
+  width: 50%;
+}
+.selectFile
+{
+  width: 40%;
+}
+.selectMain
+{
+  width: 55%;
+}
